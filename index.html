@@ -1,0 +1,42 @@
+<head>
+	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+	<style>
+		body {
+			background-color:#E5E5E5;
+			color:#191919;
+			font-size:24px;
+			font-family:Roboto;
+			margin:0px;
+		}
+		table {
+			color:#191919;
+			border-spacing:0
+		}
+		td {
+			padding:0;
+		}
+		button {
+			background-color:#191919;
+			color:#E5E5E5;
+			border:none;
+			transition-duration:0.2s
+		}
+		button:hover {
+			background-color:#CCCCCC;
+			color:#191919
+		}
+		.shopButton {
+			height:48px;
+			width:144px
+		}
+	</style>
+	<script type="text/javascript" src="game.js"></script>
+	<script type="text/javascript" src="setup.js"></script>
+</head>
+<body onload='setup()'>
+	<table style='height:100%;width:100%;font-size:96px;text-align:center'><tr><td id='number'>0</td></tr></table>
+	<div style='position:absolute;width:100%;bottom:25%;text-align:center'><button id='mult1' class='shopButton' style='display:none' onclick='buyMult(1)'>Increase multiplier<br>x1<br>Cost: 10</button>
+	<button id='mult2' class='shopButton' style='display:none' onclick='buyMult(2)'>Increase multiplier<br>x1<br>Cost: 10</button>
+	<button id='mult3' class='shopButton' style='display:none' onclick='buyMult(3)'>Increase multiplier<br>x1<br>Cost: 10</button></div>
+	<div id='rank' style='position:absolute;width:100%;bottom:0;text-align:center'>Rank 1 | Next rank at 10</div>
+</body>
