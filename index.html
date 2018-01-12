@@ -6,7 +6,8 @@
 			color:#191919;
 			font-size:24px;
 			font-family:Roboto;
-			margin:0px;
+			margin:0;
+			padding:0
 		}
 		table {
 			color:#191919;
@@ -25,6 +26,10 @@
 			background-color:#CCCCCC;
 			color:#191919
 		}
+		.tabButton {
+			height:24px;
+			width:144px
+		}
 		.shopButton {
 			height:48px;
 			width:144px
@@ -34,9 +39,16 @@
 	<script type="text/javascript" src="setup.js"></script>
 </head>
 <body onload='setup()'>
-	<table style='height:100%;width:100%;font-size:96px;text-align:center'><tr><td id='number'>0</td></tr></table>
-	<div style='position:absolute;width:100%;bottom:25%;text-align:center'><button id='mult1' class='shopButton' style='display:none' onclick='buyMult(1)'>Increase multiplier<br>x1<br>Cost: 10</button>
-	<button id='mult2' class='shopButton' style='display:none' onclick='buyMult(2)'>Increase multiplier<br>x1<br>Cost: 10</button>
-	<button id='mult3' class='shopButton' style='display:none' onclick='buyMult(3)'>Increase multiplier<br>x1<br>Cost: 10</button></div>
-	<div id='rank' style='position:absolute;width:100%;bottom:0;text-align:center'>Rank 1 | Next rank at 10</div>
+	<div id='tabs' style='position:absolute;width:100%;text-align:center;z-index:1;display:none'><button class='tabButton' onclick='switchTab("main")'>Main</button>
+	<button class='tabButton' onclick='switchTab("options")'>Options</button></div>
+	<div id='numberSmall' style='position:absolute;width:100%;bottom:24px;text-align:center;display:none;z-index:1'>1</div>
+	<div id='rank' style='position:absolute;width:100%;bottom:0;text-align:center;z-index:1'>Rank 1 | Next rank at 10</div>
+	<div id='tabmain'>
+		<table style='position:absolute;height:100%;width:100%;font-size:96px;text-align:center'><tr><td id='number'>0</td></tr></table>
+		<div style='position:absolute;width:100%;bottom:25%;text-align:center'><button id='mult1' class='shopButton' style='display:none' onclick='buyMult(1)'>Increase multiplier<br>x1<br>Cost: 10</button>
+		<button id='mult2' class='shopButton' style='display:none' onclick='buyMult(2)'>Increase multiplier<br>x1<br>Cost: 10</button>
+		<button id='mult3' class='shopButton' style='display:none' onclick='buyMult(3)'>Increase multiplier<br>x1<br>Cost: 10</button></div>
+	</div>
+	<div id='taboptions' style='display:none'>
+	</div>
 </body>
