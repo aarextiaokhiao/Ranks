@@ -11,7 +11,7 @@ oldTab=tab
 
 function gameInit() {
 	var tickspeed=0
-	load(localStorage.getItem('save'))
+	load(localStorage.getItem('saveRanks'))
 	updated=true
 	setInterval(function(){
 		if (updated) {
@@ -151,7 +151,7 @@ function switchTab(tabName) {
 
 function save() {
 	try {
-		localStorage.setItem('save',btoa(JSON.stringify(player)))
+		localStorage.setItem('saveRanks',btoa(JSON.stringify(player)))
 		console.log('Game saved!')
 	} catch (e) {
 		console.log('Well, we tried.')
