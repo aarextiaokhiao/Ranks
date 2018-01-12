@@ -4,8 +4,8 @@ mults:[1,1,1],
 multBought:[0,0,0],
 version:1}
 time=new Date().getTime()
-rankReqs=[{num:10},{num:150},{num:2000},{num:1e5},{num:2e6}]
-costs=[10,2000,1e5]
+rankReqs=[{num:10},{num:150},{num:2000},{num:5e5},{num:1e10}]
+costs=[10,2000,5e5]
 tab='main'
 oldTab=tab
 
@@ -128,7 +128,7 @@ function rankUp() {
 }
 
 function updateCosts() {
-	var firstCosts=[10,2e3,1e5]
+	var firstCosts=[10,2e3,5e5]
 	for (i=0;i<3;i++) {
 		costs[i]=firstCosts[i]*Math.pow(1.1,player.multBought[i])
 	}
@@ -138,7 +138,7 @@ function buyMult(tier) {
 	if (player.num>=costs[tier-1]) {
 		player.num-=costs[tier-1]
 		player.multBought[tier-1]+=1
-		player.mults[tier-1]*=60/59
+		player.mults[tier-1]*=100/99
 		player.mults[tier-1]=Math.ceil(player.mults[tier-1])
 		
 		updateCosts()
@@ -182,4 +182,16 @@ function importSave() {
 			alert('Your save was invalid or caused a game-breaking bug. :(')
 		}
 	}
+}
+
+function reset() {
+	player.num=0
+	player.rank=1
+	player.mults=[1,1,1]
+	player.multBought=[0,0,0]
+	localStorage.clear('saveRanks')
+	
+	updateRankText()
+	updateCosts()
+	tab='main'
 }
