@@ -40,19 +40,26 @@
 </head>
 <body onload='setup()'>
 	<div id='tabs' style='position:absolute;width:100%;text-align:center;z-index:1;display:none'><button class='wideButton' onclick='switchTab("main")'>Main</button>
-	<button class='wideButton' onclick='switchTab("options")'>Options</button></div>
+	<button class='wideButton' onclick='switchTab("options")'>Options</button>
+	<button id='tabstatsbutton' class='wideButton' onclick='switchTab("stats")'>Stats</button></div>
 	<div id='numberSmall' style='position:absolute;width:100%;bottom:24px;text-align:center;display:none;z-index:1'>1</div>
 	<div id='rank' style='position:absolute;width:100%;bottom:0;text-align:center;z-index:1'>Rank 1 | Next rank at 10</div>
 	<div id='tabmain'>
 		<table style='position:absolute;height:100%;width:100%;font-size:96px;text-align:center'><tr><td id='number'>0</td></tr></table>
 		<div style='position:absolute;width:100%;bottom:25%;text-align:center'><button id='mult1' class='bigButton' style='display:none' onclick='buyMult(1)'>Increase multiplier<br>x1<br>Cost: 10</button>
 		<button id='mult2' class='bigButton' style='display:none' onclick='buyMult(2)'>Increase multiplier<br>x1<br>Cost: 10</button>
-		<button id='mult3' class='bigButton' style='display:none' onclick='buyMult(3)'>Increase multiplier<br>x1<br>Cost: 10</button></div>
+		<button id='mult3' class='bigButton' style='display:none' onclick='buyMult(3)'>Increase multiplier<br>x1<br>Cost: 10</button><br>
+		<button id='multincrease' class='bigButton' style='display:none' onclick='buyMultIncrease()'>Increase multiplier increase<br>x1<br>Cost: 10</button></div>
 	</div>
 	<div id='taboptions' style='position:absolute;top:36px;width:100%;text-align:center;display:none'>
 		<button class='bigButton' onClick='save()'>Save</button>
 		<button class='bigButton' onClick='exportSave()'>Export</button>
 		<button class='bigButton' onClick='importSave()'>Import</button>
 		<div id='exportSave' style='display:none'>Here is your export save. Enjoy! <input id='exportText' style='width: 480px'></input></div>
+	</div>
+	<div id='tabstats' style='position:absolute;top:36px;width:100%;text-align:center;display:none'>
+		<div id='timePlayed'>You have played for X.</div>
+		<div id='totalNumber'>You increased the number by X in total.</div>
+		<div id='timeRank'>You ranked up X.</div>
 	</div>
 </body>
