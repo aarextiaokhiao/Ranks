@@ -9,12 +9,16 @@ multBought:[0,0,0],
 money:0,
 gens:[0,0,0],
 coal:0,
+fuel:0,
+fuelwasted:0,
+genpower:2,
+fuelefficent:1,
 time:0,
 version:1,
-build:3}
-rankReqs=[{num:10},{num:2000},{num:5e5},{num:1e10},{num:1e12,money:5}]
+build:6}
+rankReqs=[{num:10},{num:2000},{num:5e5},{num:1e10},{num:1e12,money:5},{num:1e14,money:500,coal:100,fuel:5}]
 notationArray=['Mixed','Scientific']
-costs={mults:[],gens:[]}
+costs={mults:[],money:[0,0,0,100,200]}
 tab='main'
 oldTab=tab
 
@@ -46,6 +50,14 @@ function gameTick() {
 		var diff=(newTime-player.time)/1000
 		player.num+=diff*getNPS()
 		player.totalNum+=diff*getNPS()
+		var wastedfuel=diff*player.genpower/(2*player.fuelefficent)
+		if (wastedfuel>player.fuel) {
+			player.fuelwasted+=player.fuel
+			player.fuel=0
+		} else {
+			player.fuel-=wastedfuel
+			player.fuelwasted+=wastedfuel
+		}
 		player.timePlayed+=diff
 		player.rankTime+=diff
 		rankUp()
@@ -94,23 +106,29 @@ function gameTick() {
 		updateElement('timePlayed','You have played for '+formatTime(player.timePlayed)+'.')
 		updateElement('totalNumber','You increased the number by '+format(player.totalNum)+' in total.')
 		updateElement('timeRank','You ranked up '+formatTime(player.rankTime)+' ago.')
+		updateElement('fuelWasted','You wasted '+format(player.fuelwasted,1,0,false)+' fuel.')
 	}
 	if (tab=='money') {
 		updateElement('money','You have '+formatMoney(player.money)+'.')
 		updateElement('exchange1','Exchange '+format(1e9)+' to 1 cent')
 		updateElement('exchange2','Exchange 1 cent to '+format(1e9))
-		updateElement('gen1','Generate '+format(1e7)+'/s<br>'+player.gens[0]+'x<br>'+formatMoney(costs.gens[0]))
-		updateElement('gen2','Generate '+format(1e8)+'/s<br>'+player.gens[1]+'x<br>'+formatMoney(costs.gens[1]))
-		updateElement('gen3','Generate '+format(1e9)+'/s<br>'+player.gens[2]+'x<br>'+formatMoney(costs.gens[2]))
+		updateElement('gen1','Generate '+format(1e7)+'/s<br>'+player.gens[0]+'x<br>'+formatMoney(costs.money[0]))
+		updateElement('gen2','Generate '+format(1e8)+'/s<br>'+player.gens[1]+'x<br>'+formatMoney(costs.money[1]))
+		updateElement('gen3','Generate '+format(1e9)+'/s<br>'+player.gens[2]+'x<br>'+formatMoney(costs.money[2]))
 		if (player.rank>5) {
-			showElement('coal','inline-block')
-			showElement('exchange3','table-cell')
-			showElement('exchange4','table-cell')
+			showElement('coalsection','inline-block')
 			updateElement('coal','You have '+format(player.coal)+' coal.')
+			updateElement('genpower','Generator power: '+format(player.genpower,2,0,false)+'x')
+			updateElement('fuel','Fuel: '+format(player.fuel,1,0,false))
+			if (player.rank>6) {
+				showElement('upgsection','inline-block')
+				updateElement('genpowerUpg','Upgrade gen power<br>'+player.genpower+'x<br>Cost: '+formatMoney(costs.money[3]))
+				updateElement('fuelUpg','Increase fuel efficient<br>'+player.fuelefficent+'x<br>Cost: '+formatMoney(costs.money[4]))
+			} else {
+				hideElement('upgsection')
+			}
 		} else {
-			hideElement('coal')
-			hideElement('exchange3')
-			hideElement('exchange4')
+			hideElement('coalsection')
 		}
 	}
 }
@@ -128,27 +146,29 @@ function hideElement(elem) {
 }
 
 function format(num,decimalPoints=2,offset=0,rounded=true) {
-	if (isNaN(num)) {
+	var abs=Math.abs(num)
+	var exponent=Math.floor(Math.max(Math.log10(abs),0))
+	var precision=3*offset+decimalPoints-exponent
+	if (isNaN(num)||isNaN(exponent)) {
 		return '?'
-	} else if (num==1/0) {
+	} else if (abs==1/0) {
 		return 'Infinite'
+	} else if (abs<Math.pow(1000,1+offset)-0.5) {
+		if (rounded) return Math.round(num)
+		return Math.round(num*Math.pow(10,precision))/Math.pow(10,precision)
 	} else if (player.notation==0) {
-		var abbid=Math.max(Math.floor(Math.log10(Math.abs(num))/3)-offset,0)
-		var mantissa=num/Math.pow(1000,abbid)
-		var log=Math.floor(Math.log10(mantissa))
-		mantissa=(abbid==0&&rounded)?Math.round(mantissa):Math.round(mantissa*Math.pow(10,3*offset+decimalPoints-log))/Math.pow(10,3*offset+decimalPoints-log)
-		if (mantissa==Math.pow(1000,1+offset)) {
+		var abbid=Math.max(Math.floor(exponent/3-offset),0)
+		precision+=3*abbid
+		var mantissa=Math.round(num*Math.pow(10,precision-3*abbid))/Math.pow(10,precision)
+		if (Math.abs(mantissa)==Math.pow(1000,1+offset)) {
 			mantissa=mantissa/1000
 			abbid+=1
 		}
 		return mantissa+abbs[abbid]
 	} else {
-		var exponent=Math.max(Math.floor(Math.log10(Math.abs(num)))-3*offset,0)
-		if (exponent<3) exponent=0
-		var mantissa=num/Math.pow(10,exponent)
-		var log=Math.floor(Math.log10(mantissa))
-		mantissa=(exponent==0&&rounded)?Math.round(mantissa):Math.round(mantissa*Math.pow(10,3*offset+decimalPoints-log))/Math.pow(10,3*offset+decimalPoints-log)
-		if (mantissa==Math.pow(10,3*offset+1)) {
+		precision=3*offset+decimalPoints
+		var mantissa=Math.round(num*Math.pow(10,precision-exponent))/Math.pow(10,precision)
+		if (Math.abs(mantissa)==Math.pow(10,3*offset+1)) {
 			mantissa=mantissa/10
 			exponent+=1
 		}
@@ -185,12 +205,12 @@ function formatTime(s) {
 }
 
 function switchNotation() {
-	player.notation+=1
-	if (player.notation==notationArray.length) player.notation=0
+	player.notation=(player.notation+1)%notationArray.length
+	updateRankText()
 }
 
 function getNPS() {
-	return player.mults[0]*player.mults[1]*player.mults[2]+player.gens[0]*1e7+player.gens[1]*1e8+player.gens[2]*1e9
+	return player.mults[0]*player.mults[1]*player.mults[2]+(player.gens[0]*1e7+player.gens[1]*1e8+player.gens[2]*1e9)*(player.fuel>0?player.genpower:1)
 }
 
 function updateRankText() {
@@ -202,9 +222,10 @@ function updateRankText() {
 			if (nextRank!='') nextRank=nextRank+' & '
 			if (req=='num') {
 				nextRank=nextRank+format(rankReqs[player.rank-1][req])
-			}
-			if (req=='money') {
+			} else if (req=='money') {
 				nextRank=nextRank+formatMoney(rankReqs[player.rank-1][req])
+			} else {
+				nextRank=nextRank+format(rankReqs[player.rank-1][req])+' '+req
 			}
 		}
 		value=value+nextRank
@@ -233,8 +254,10 @@ function updateCosts() {
 		costs.mults[i]=firstCosts[i]*Math.pow(1.1,player.multBought[i])
 	}
 	for (i=0;i<3;i++) {
-		costs.gens[i]=Math.pow(10,i-1+player.gens[i]*0.01)
+		costs.money[i]=Math.pow(10,i-1+player.gens[i]*0.01)
 	}
+	costs.money[3]=Math.pow(player.genpower/2,2)*100
+	costs.money[4]=Math.pow(player.fuelefficent,2)*200
 }
 
 function buyMult(tier) {
@@ -252,20 +275,26 @@ function exchange(id) {
 	switch (id) {
 		case 1: if (player.num>=1e9) {player.num-=1e9;player.money+=0.01} break
 		case 2: if (player.money>=0.01) {player.money-=0.01;player.num+=1e9} break
-		case 3: if (player.money>=5) {player.money-=5;player.coal+=1} break
-		case 4: if (player.coal>0) {player.coal-=1;player.money+=5} break
+		case 3: var gain=Math.floor(player.num/2e9);player.num-=gain*1e9;player.money+=gain/100; break
+		case 4: var gain=Math.floor(player.money*50);player.money-=gain/100;player.num+=gain*1e9; break
+		case 5: if (player.money>=5) {player.money-=5;player.coal+=1} break
+		case 6: if (player.coal>0) {player.coal-=1;player.money+=4} break
+		case 7: if (player.coal>0) {player.coal-=1;player.fuel+=1} break
 	}
 	updateValues()
 }
 
-function buyGen(tier) {
-	if (player.money>=costs.gens[tier-1]) {
-		player.money-=costs.gens[tier-1]
-		player.gens[tier-1]+=1
-		
-		updateCosts()
-		updateValues()
+function buyMoney(id) {
+	if (player.money>=costs.money[id]) {
+		player.money-=costs.money[id]
+		switch (id) {
+			case 0: case 1: case 2: player.gens[id]+=1; break
+			case 3: player.genpower+=1; break
+			case 4: player.fuelefficent+=0.5; break
+		}
 	}
+	updateCosts()
+	updateValues()
 }
 	
 function switchTab(tabName) {
@@ -303,6 +332,12 @@ function load(savefile) {
 				savefile.gens=[0,0,0]
 				savefile.coal=0
 			}
+			if (savefile.build<6) {
+				savefile.fuel=0
+				savefile.fuelwasted=0
+				savefile.genpower=2
+				savefile.fuelefficent=1
+			}
 		}
 		savefile.version=player.version
 		savefile.build=player.build
@@ -336,12 +371,18 @@ function reset() {
 	if (confirm('Are you sure to reset your save? You can\'t undo your action!')) {
 		player.notation=0
 		player.num=0
+		player.totalNum=0
 		player.rank=1
 		player.mults=[1,1,1]
 		player.multBought=[0,0,0]
 		player.money=0
 		player.gens=[0,0,0]
 		player.coal=0
+		player.fuel=0
+		player.fuelwasted=0
+		player.genpower=2
+		player.fuelefficent=1
+		player.time=0
 		localStorage.clear('saveRanks')
 		
 		updateRankText()
