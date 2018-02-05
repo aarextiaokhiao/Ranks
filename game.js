@@ -1,15 +1,20 @@
 player={timePlayed:0,
+notation:0,
 num:0,
 totalNum:0,
 rank:1,
 rankTime:0,
 mults:[1,1,1],
 multBought:[0,0,0],
+money:0,
+gens:[0,0,0],
+coal:0,
 time:0,
 version:1,
-build:2}
-rankReqs=[{num:10},{num:150},{num:2000},{num:5e5},{num:1e10},{num:1e11}]
-costs=[10,2000,5e5]
+build:3}
+rankReqs=[{num:10},{num:2000},{num:5e5},{num:1e10},{num:1e12,money:5}]
+notationArray=['Mixed','Scientific']
+costs={mults:[],gens:[]}
 tab='main'
 oldTab=tab
 
@@ -32,29 +37,25 @@ function gameInit() {
 			},tickspeed)
 		}
 	},0)
+	setInterval(save,30000)
 }
 
 function gameTick() {
+	var newTime=new Date().getTime()
 	if (player.time>0) {
-		var newTime=new Date().getTime()
 		var diff=(newTime-player.time)/1000
-		player.num+=diff*player.mults[0]*player.mults[1]*player.mults[2]
-		player.totalNum+=diff*player.mults[0]*player.mults[1]*player.mults[2]
+		player.num+=diff*getNPS()
+		player.totalNum+=diff*getNPS()
 		player.timePlayed+=diff
 		player.rankTime+=diff
 		rankUp()
 	}
 	player.time=newTime
 	
-	if (player.rank>2) {
-		showElement('tabs','block')
-		if (player.rank>6) {
-			showElement('tabstatsbutton','inline')
-		} else {
-			hideElement('tabstatsbutton')
-		}
+	if (player.rank>4) {
+		showElement('tabmoneybutton','table-cell')
 	} else {
-		hideElement('tabs')
+		hideElement('tabmoneybutton')
 	}
 	if (tab!=oldTab) {
 		showElement('tab'+tab,'block')
@@ -66,19 +67,19 @@ function gameTick() {
 		updateElement('number',format(player.num))
 		if (player.rank>1) {
 			showElement('mult1','table-cell')
-			updateElement('mult1','Increase multiplier<br>'+player.mults[0]+'x<br>Cost: '+format(costs[0]))
+			updateElement('mult1','Increase multiplier<br>'+player.mults[0]+'x<br>Cost: '+format(costs.mults[0]))
 		} else {
 			hideElement('mult1')
 		}
-		if (player.rank>3) {
+		if (player.rank>2) {
 			showElement('mult2','table-cell')
-			updateElement('mult2','Increase multiplier<br>'+player.mults[1]+'x<br>Cost: '+format(costs[1]))
+			updateElement('mult2','Increase multiplier<br>'+player.mults[1]+'x<br>Cost: '+format(costs.mults[1]))
 		} else {
 			hideElement('mult2')
 		}
-		if (player.rank>4) {
+		if (player.rank>3) {
 			showElement('mult3','table-cell')
-			updateElement('mult3','Increase multiplier<br>'+player.mults[2]+'x<br>Cost: '+format(costs[2]))
+			updateElement('mult3','Increase multiplier<br>'+player.mults[2]+'x<br>Cost: '+format(costs.mults[2]))
 		} else {
 			hideElement('mult3')
 		}
@@ -86,10 +87,31 @@ function gameTick() {
 		showElement('numberSmall')
 		updateElement('numberSmall',format(player.num))
 	}
+	if (tab=='options') {
+		updateElement('notation','Notation:<br>'+notationArray[player.notation])
+	}
 	if (tab=='stats') {
 		updateElement('timePlayed','You have played for '+formatTime(player.timePlayed)+'.')
 		updateElement('totalNumber','You increased the number by '+format(player.totalNum)+' in total.')
 		updateElement('timeRank','You ranked up '+formatTime(player.rankTime)+' ago.')
+	}
+	if (tab=='money') {
+		updateElement('money','You have '+formatMoney(player.money)+'.')
+		updateElement('exchange1','Exchange '+format(1e9)+' to 1 cent')
+		updateElement('exchange2','Exchange 1 cent to '+format(1e9))
+		updateElement('gen1','Generate '+format(1e7)+'/s<br>'+player.gens[0]+'x<br>'+formatMoney(costs.gens[0]))
+		updateElement('gen2','Generate '+format(1e8)+'/s<br>'+player.gens[1]+'x<br>'+formatMoney(costs.gens[1]))
+		updateElement('gen3','Generate '+format(1e9)+'/s<br>'+player.gens[2]+'x<br>'+formatMoney(costs.gens[2]))
+		if (player.rank>5) {
+			showElement('coal','inline-block')
+			showElement('exchange3','table-cell')
+			showElement('exchange4','table-cell')
+			updateElement('coal','You have '+format(player.coal)+' coal.')
+		} else {
+			hideElement('coal')
+			hideElement('exchange3')
+			hideElement('exchange4')
+		}
 	}
 }
 
@@ -105,21 +127,40 @@ function hideElement(elem) {
 	document.getElementById(elem).style.display='none'
 }
 
-function format(num,decimalPoints=2,offset=0) {
+function format(num,decimalPoints=2,offset=0,rounded=true) {
 	if (isNaN(num)) {
 		return '?'
 	} else if (num==1/0) {
 		return 'Infinite'
-	} else {
+	} else if (player.notation==0) {
 		var abbid=Math.max(Math.floor(Math.log10(Math.abs(num))/3)-offset,0)
 		var mantissa=num/Math.pow(1000,abbid)
 		var log=Math.floor(Math.log10(mantissa))
-		mantissa=(abbid==0)?Math.round(mantissa):Math.round(mantissa*Math.pow(10,3*offset+decimalPoints-log))/Math.pow(10,3*offset+decimalPoints-log)
+		mantissa=(abbid==0&&rounded)?Math.round(mantissa):Math.round(mantissa*Math.pow(10,3*offset+decimalPoints-log))/Math.pow(10,3*offset+decimalPoints-log)
 		if (mantissa==Math.pow(1000,1+offset)) {
 			mantissa=mantissa/1000
 			abbid+=1
 		}
 		return mantissa+abbs[abbid]
+	} else {
+		var exponent=Math.max(Math.floor(Math.log10(Math.abs(num)))-3*offset,0)
+		if (exponent<3) exponent=0
+		var mantissa=num/Math.pow(10,exponent)
+		var log=Math.floor(Math.log10(mantissa))
+		mantissa=(exponent==0&&rounded)?Math.round(mantissa):Math.round(mantissa*Math.pow(10,3*offset+decimalPoints-log))/Math.pow(10,3*offset+decimalPoints-log)
+		if (mantissa==Math.pow(10,3*offset+1)) {
+			mantissa=mantissa/10
+			exponent+=1
+		}
+		return mantissa+(exponent==0?'':'e'+exponent)
+	}
+}
+
+function formatMoney(m) {
+	if (m < 1) {
+		return Math.round(m*100)+' cent'+(m==0.01?'':'s')
+	} else {
+		return '$'+format(m,2,0,false)
 	}
 }
 
@@ -143,15 +184,30 @@ function formatTime(s) {
 	}
 }
 
+function switchNotation() {
+	player.notation+=1
+	if (player.notation==notationArray.length) player.notation=0
+}
+
+function getNPS() {
+	return player.mults[0]*player.mults[1]*player.mults[2]+player.gens[0]*1e7+player.gens[1]*1e8+player.gens[2]*1e9
+}
+
 function updateRankText() {
 	var value='Rank '+player.rank
 	if (rankReqs[player.rank-1]) {
 		value=value+' | Next rank at '
+		nextRank=''
 		for (req in rankReqs[player.rank-1]) {
+			if (nextRank!='') nextRank=nextRank+' & '
 			if (req=='num') {
-				value=value+format(rankReqs[player.rank-1][req])
+				nextRank=nextRank+format(rankReqs[player.rank-1][req])
+			}
+			if (req=='money') {
+				nextRank=nextRank+formatMoney(rankReqs[player.rank-1][req])
 			}
 		}
+		value=value+nextRank
 	}
 	updateElement('rank',value)
 }
@@ -167,21 +223,48 @@ function rankUp() {
 	if (ableToRankUp) {player.rank+=1;player.rankTime=0;updateRankText()}
 }
 
+function updateValues() {
+	player.money=Math.round(player.money*100)/100
+}
+
 function updateCosts() {
 	var firstCosts=[10,2e3,5e5]
 	for (i=0;i<3;i++) {
-		costs[i]=firstCosts[i]*Math.pow(1.1,player.multBought[i])
+		costs.mults[i]=firstCosts[i]*Math.pow(1.1,player.multBought[i])
+	}
+	for (i=0;i<3;i++) {
+		costs.gens[i]=Math.pow(10,i-1+player.gens[i]*0.01)
 	}
 }
 
 function buyMult(tier) {
-	if (player.num>=costs[tier-1]) {
-		player.num-=costs[tier-1]
+	if (player.num>=costs.mults[tier-1]) {
+		player.num-=costs.mults[tier-1]
 		player.multBought[tier-1]+=1
 		player.mults[tier-1]*=100/99
 		player.mults[tier-1]=Math.ceil(player.mults[tier-1])
 		
 		updateCosts()
+	}
+}
+
+function exchange(id) {
+	switch (id) {
+		case 1: if (player.num>=1e9) {player.num-=1e9;player.money+=0.01} break
+		case 2: if (player.money>=0.01) {player.money-=0.01;player.num+=1e9} break
+		case 3: if (player.money>=5) {player.money-=5;player.coal+=1} break
+		case 4: if (player.coal>0) {player.coal-=1;player.money+=5} break
+	}
+	updateValues()
+}
+
+function buyGen(tier) {
+	if (player.money>=costs.gens[tier-1]) {
+		player.money-=costs.gens[tier-1]
+		player.gens[tier-1]+=1
+		
+		updateCosts()
+		updateValues()
 	}
 }
 	
@@ -212,17 +295,26 @@ function load(savefile) {
 				savefile,totalNum=0
 				savefile.rankTime=0
 			}
+			if (savefile.build<3) {
+				if (player.rank>2) player.rank-=1
+				if (player.rank>5) player.rank-=1
+				savefile.notation=0
+				savefile.money=0
+				savefile.gens=[0,0,0]
+				savefile.coal=0
+			}
 		}
 		savefile.version=player.version
 		savefile.build=player.build
 		
 		player=savefile
-		updateRankText()
-		updateCosts()
 		console.log('Game loaded!')
 	} catch (e) {
 		console.log('Your save failed to load: '+e)
 	}
+	updateRankText()
+	updateValues()
+	updateCosts()
 }
 
 function exportSave() {
@@ -242,13 +334,18 @@ function importSave() {
 
 function reset() {
 	if (confirm('Are you sure to reset your save? You can\'t undo your action!')) {
+		player.notation=0
 		player.num=0
 		player.rank=1
 		player.mults=[1,1,1]
 		player.multBought=[0,0,0]
+		player.money=0
+		player.gens=[0,0,0]
+		player.coal=0
 		localStorage.clear('saveRanks')
 		
 		updateRankText()
+		updateValues()
 		updateCosts()
 		tab='main'
 	}
