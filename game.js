@@ -15,7 +15,7 @@ genpower:2,
 fuelefficent:1,
 time:0,
 version:1,
-build:6}
+build:7}
 rankReqs=[{num:10},{num:2000},{num:5e5},{num:1e10},{num:1e12,money:5},{num:1e14,money:500,coal:100,fuel:5}]
 notationArray=['Mixed','Scientific']
 costs={mults:[],money:[0,0,0,100,200]}
@@ -279,7 +279,7 @@ function exchange(id) {
 		case 4: var gain=Math.floor(player.money*50);player.money-=gain/100;player.num+=gain*1e9; break
 		case 5: if (player.money>=5) {player.money-=5;player.coal+=1} break
 		case 6: if (player.coal>0) {player.coal-=1;player.money+=4} break
-		case 7: if (player.coal>0) {player.coal-=1;player.fuel+=1} break
+		case 7: if (player.coal>4) {player.coal-=5;player.fuel+=5} break
 	}
 	updateValues()
 }
