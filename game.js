@@ -14,8 +14,8 @@ fuelwasted:0,
 genpower:2,
 fuelefficent:1,
 time:0,
-version:1,
-build:7}
+version:1.01,
+build:1}
 rankReqs=[{num:10},{num:2000},{num:5e5},{num:1e10},{num:1e12,money:5},{num:1e14,money:500,coal:100,fuel:5}]
 notationArray=['Mixed','Scientific']
 costs={mults:[],money:[0,0,0,100,200]}
@@ -106,7 +106,12 @@ function gameTick() {
 		updateElement('timePlayed','You have played for '+formatTime(player.timePlayed)+'.')
 		updateElement('totalNumber','You increased the number by '+format(player.totalNum)+' in total.')
 		updateElement('timeRank','You ranked up '+formatTime(player.rankTime)+' ago.')
-		updateElement('fuelWasted','You wasted '+format(player.fuelwasted,1,0,false)+' fuel.')
+		if (player.fuelwasted>0) {
+			showElement('fuelWasted')
+			updateElement('fuelWasted','You wasted '+format(player.fuelwasted,1,0,false)+' fuel.')
+		} else {
+			hideElement('fuelWasted')
+		}
 	}
 	if (tab=='money') {
 		updateElement('money','You have '+formatMoney(player.money)+'.')
@@ -317,7 +322,7 @@ function load(savefile) {
 			savefile.version=1
 			savefile.build=1
 		}
-		if (savefile.version<2) {
+		if (savefile.version<1.01) {
 			if (savefile.build<2) {
 				savefile.time=new Date().getTime()
 				savefile.timePlayed=0
@@ -338,6 +343,7 @@ function load(savefile) {
 				savefile.genpower=2
 				savefile.fuelefficent=1
 			}
+			savefile.build=1
 		}
 		savefile.version=player.version
 		savefile.build=player.build
