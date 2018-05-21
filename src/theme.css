@@ -1,0 +1,111 @@
+body {background-color:#e5e5e5;
+	font-size:12px;
+	font-family:'Roboto';
+	color:#191919;
+	margin:0}
+	
+button {background-color:#bfbfbf;
+	height:36px;
+	width:120px;
+	border:none;
+	font-size:24px;
+	font-family:'Roboto';
+	transition-duration:0.25s}
+button:hover {background-color:#e5e5e5}
+button:active {background-color:#999999}
+	
+.darkButton {background-color:#999999}
+.darkButton:hover {background-color:#bfbfbf}
+.darkButton:active {background-color:#7f7f7f}
+
+.optionButton {height:72px;
+	width:180px}
+	
+.shopButton {font-size: 16px}
+
+.cantAfford, .cantAfford:hover, .cantAfford:active {font-size: 16px;
+	background-color:#999999}
+
+.bought, .bought:hover, .bought:active {background-color:#00e500}
+	
+.centerEverything td {text-align:center}
+	
+#loading {background-color:#e5e5e5;
+	position:fixed;
+	top:0%;
+	height:100%;
+	width:100%;
+	font-size:36px;
+	transition-duration:2s;
+	z-index:2}
+
+#rank {position:fixed;
+	right:0;
+	bottom:32px;
+	width:100%;
+	font-size:16px;
+	text-align:right;
+	z-index:1}
+	
+#frame_number {position:fixed;
+	top:50%;
+	width:100%;
+	transform:translate(0,-50%);
+	font-size:24px;
+	text-align:center}
+	
+#number {font-size:72px}
+	
+#frame_factors {position:absolute;
+	left:50%;
+	transform:translate(-50%,0);
+	text-align:center}
+	
+#totalFactorMultiplier {font-size: 16px}
+
+.upgrade {display:inline-block;
+	width: 240px;
+	font-size: 16px}
+
+#header {position:fixed;
+	left:0;
+	top:0;
+	width:100%;
+	overflow-x:auto;
+	z-index:1}
+
+#header table {
+	padding:0;
+	border-spacing:0;
+}
+
+#header td {
+	padding:0
+}
+
+#footer {background-color:rgba(25,25,25,0.4);
+	position:fixed;
+	left:0;
+	bottom:0;
+	width:100%;
+	font-size:24px;
+	z-index:1}
+
+.tab {position:absolute;
+	top:60px;
+	width:100%}
+
+.footerBlockage {height:30px}
+	
+	
+	
+#changelog {text-align:center}
+
+#changelog div {font-size:24px}
+
+#changelog h1 {font-size:48px}
+
+#changelog h2 {font-size:36px}
+
+#changelog .slogan {color:rgba(25,25,25,0.5);
+	font-size:24px}
