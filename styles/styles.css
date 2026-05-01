@@ -1,0 +1,59 @@
+/* Body */
+body {
+	background-color: #010;
+	font-size: 16px;
+}
+
+* {
+	font-family: Lexend;
+	color: #bfb;
+
+	margin: 0;
+	padding: 0;
+	text-align: center
+}
+
+#number {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 96px;
+}
+
+/* Tables */
+.upgrades {
+	display: flex;
+    justify-content: center;
+}
+.upgrades * {
+	margin: 3px
+}
+
+/* Buttons */
+button {
+	background: linear-gradient(#070, #000);
+	border: 1px solid #0b0;
+	border-radius: 6px;
+
+	color: #fff;
+	transition-duration: 0.2s;
+	padding: 3px;
+
+	cursor: pointer
+}
+button * {
+	pointer-events: none;
+}
+button:hover {
+	transform: scale(1.1)
+}
+
+.wideButton {
+	width: 160px;
+	height: 36px
+}
+.bigButton {
+	min-height: 48px;
+	width: 160px
+}

@@ -1,98 +1,100 @@
-<!-- A game made by Aarex without prestige and prestige layers. -->
+<!--
+	A game made by Aarex without prestige and prestige layers.
+-->
 <head>
-	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-	<style>
-		body {
-			background-color:#E5E5E5;
-			color:#191919;
-			font-size:24px;
-			font-family:Roboto;
-			margin:0;
-			padding:0
-		}
-		table {
-			color:#191919;
-			border-spacing:0
-		}
-		td {
-			padding:5;
-		}
-		button {
-			background-color:#191919;
-			color:#E5E5E5;
-			border:none;
-			transition-duration:0.2s
-		}
-		button:hover {
-			background-color:#CCCCCC;
-			color:#191919
-		}
-		.wideButton {
-			height:24px;
-			width:144px
-		}
-		.bigButton {
-			height:48px;
-			width:144px
-		}
-	</style>
-	<script type="text/javascript" src="game.js"></script>
-	<script type="text/javascript" src="setup.js"></script>
+	<link href='https://fonts.googleapis.com/css?family=Lexend' rel='stylesheet'>
+	<link rel="stylesheet" type="text/css" href="styles/styles.css">
+
+	<script type="text/javascript" src="js/display.js"></script>
+	<script type="text/javascript" src="js/game.js"></script>
+	<script type="text/javascript" src="js/format.js"></script>
+	<script type="text/javascript" src="js/setup.js"></script>
+	<script type="text/javascript" src="js/temp.js"></script>
 </head>
 <body onload='setup()'>
-	<div id='tabs' style='position:absolute;width:100%;height:30.5px;text-align:center;z-index:1'><button class='wideButton' onclick='switchTab("main")'>Main</button>
-	<button class='wideButton' onclick='switchTab("options")'>Options</button>
-	<button class='wideButton' onclick='switchTab("stats")'>Stats</button>
-	<button id='tabmoneybutton' class='wideButton' onclick='switchTab("money")' style='display:none'>Money</button>
-	<button class='wideButton' onclick='switchTab("about")'>About</button></div>
-	<div id='numberSmall' style='position:absolute;width:100%;bottom:24px;text-align:center;display:none;z-index:1'></div>
-	<div id='rank' style='position:absolute;width:100%;bottom:0;text-align:center;z-index:1'></div>
-	<div id='tabmain'>
-		<table style='position:absolute;height:100%;width:100%;font-size:96px;text-align:center'><tr><td id='number'></td></tr></table>
-		<div style='position:absolute;width:100%;bottom:25%;text-align:center'><button id='mult1' class='bigButton' style='display:none' onclick='buyMult(1)'></button>
-		<button id='mult2' class='bigButton' style='display:none' onclick='buyMult(2)'></button>
-		<button id='mult3' class='bigButton' style='display:none' onclick='buyMult(3)'></button></div>
+	<div id='numberSmall' style='position:absolute;width:100%;bottom:24px;display:none;z-index:1'></div>
+	<div id='rank' style='position:absolute; width:100%; bottom:0; text-align:center; z-index:1'></div>
+
+	<div class='upgrades' id='tabs' style='width:100%'>
+		<button class='wideButton' onclick='switchTab("main")'>Main</button>
+		<button id='tabmoneybutton' class='wideButton' onclick='switchTab("money")' style='display:none'>Money</button>
+		<button class='wideButton' onclick='switchTab("options")'>Options</button>
+		<button class='wideButton' onclick='switchTab("stats")'>Stats</button>
+		<button class='wideButton' onclick='switchTab("about")'>About</button>
 	</div>
-	<div id='taboptions' style='position:absolute;top:36px;width:100%;text-align:center;display:none'>
-		<table align=center><tr><td><button class='bigButton' onClick='save()'>Save</button></td>
-		<td><button class='bigButton' onClick='exportSave()'>Export</button></td>
-		<td><button class='bigButton' onClick='importSave()'>Import</button></td>
-		<td><button class='bigButton' onClick='reset()'>Reset</button></td>
-		<td><button id='notation' class='bigButton' onClick='switchNotation()'></button></td></tr></table>
-		<div id='exportSave' style='display:none'>Here is your export save. Enjoy! <input id='exportText' style='width: 480px'></input></div>
+	<div style='width: 100%'>
+		<div id='tabmain'>
+			<div id="number"></div>
+			<div style='position: absolute; width:100%; top: 60%'>
+				<!-- MULTIPLIERS -->
+				<div class='upgrades'>
+					<button id='mult1' class='bigButton' style='display:none' onclick='buyMult(1)'></button>
+					<button id='mult2' class='bigButton' style='display:none' onclick='buyMult(2)'></button>
+					<button id='mult3' class='bigButton' style='display:none' onclick='buyMult(3)'></button>
+				</div>
+
+				<!-- SACRIFICE -->
+				<div id="sacsection" style='display:none'>
+					<br><br>
+					<h3 id="sacTime"></h3>
+					<div class='upgrades'>
+						<button id="sacBtn" class='bigButton' onclick="sacrifice()"></button>
+						<button class='bigButton' onclick="timewarp()">Use +60s</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id='taboptions' style='display:none'>
+			<div class='upgrades'>
+				<button class='bigButton' onClick='save()'>Save</button>
+				<button class='bigButton' onClick='exportSave()'>Export</button>
+				<button class='bigButton' onClick='importSave()'>Import</button>
+				<button class='bigButton' onClick='reset()'>Reset</button>
+				<button id='notation' class='bigButton' onClick='switchNotation()'></button>
+			</div>
+			<div id='exportSave' style='display:none'>Here is your export save. Enjoy! <input id='exportText' style='width: 480px'></input></div>
+		</div>
+		<div id='tabstats' style='display:none'>
+			<div id='timePlayed'></div>
+			<div id='totalNumber'></div>
+			<div id='timeRank'></div>
+			<div id='fuelWasted'></div>
+		</div>
+		<div id='tabmoney' style='display:none'>
+			<div id='money'></div>
+			<div class='upgrades'>
+				<button id='exchange1' class='bigButton' onClick='exchange(1)'></button>
+				<button id='exchange2' class='bigButton' onClick='exchange(2)'></button>
+				<button class='bigButton' onClick='exchange(3)'>Exchange 50% of number to money</button>
+				<button class='bigButton' onClick='exchange(4)'>Exchange 50% of money to number</button>
+			</div>
+
+			<br>
+			<div id='moneyMult'></div>
+			<div class='upgrades'>
+				<button id='gen1' class='bigButton' onClick='buyMoney(0)'></button>
+				<button id='gen2' class='bigButton' onClick='buyMoney(1)'></button>
+				<button id='gen3' class='bigButton' onClick='buyMoney(2)'></button>
+			</div>
+
+			<br>
+			<div id='coalsection'><div id='coal'></div>
+			<div id='genpower'></div>
+			<div id='fuel'></div>
+			<button class='bigButton' onClick='exchange(5)'>Exchange $5 to 1 coal</button>
+			<button class='bigButton' onClick='exchange(6)'>Exchange 1 coal to $4</button>
+			<button class='bigButton' onClick='exchange(7)'>Turn coal to fuel</button>
+			<br>
+			<div id='upgsection'><button id='genpowerUpg' class='bigButton' onClick='buyMoney(3)'>Upgrade gen power<br>2x<br>Cost: $1</button>
+			<button id='fuelUpg' class='bigButton' onClick='buyMoney(4)'>Increase fuel efficient<br>1x<br>Cost: $1</button></div></div>
+		</div>
+		<div id='tababout' style='display:none'>
+			<h1>Ranks: v1.02</h1>
+			<h2>Welcome back</h2>
+			Ranks is a game where you must rank up for content.
+
+			<br><br>
+			<a href='changelog.html' target="_newtab">Change log</a> | <a "http://aarextiaokhiao.github.io/chat.html">Discord</s> | <a href="http://aarextiaokhiao.github.io">Home</a>
+		</div>
 	</div>
-	<div id='tabstats' style='position:absolute;top:36px;width:100%;text-align:center;display:none'>
-		<div id='timePlayed'></div>
-		<div id='totalNumber'></div>
-		<div id='timeRank'></div>
-		<div id='fuelWasted'></div>
-	</div>
-	<div id='tabmoney' style='position:absolute;top:36px;width:100%;text-align:center;display:none'>
-		<div id='money'></div>
-		<button id='exchange1' class='bigButton' onClick='exchange(1)'></button>
-		<button id='exchange2' class='bigButton' onClick='exchange(2)'></button>
-		<button class='bigButton' onClick='exchange(3)'>Exchange 50% of number to money</button>
-		<button class='bigButton' onClick='exchange(4)'>Exchange 50% of money to number</button>
-		<br><br>
-		<button id='gen1' class='bigButton' onClick='buyMoney(0)'></button>
-		<button id='gen2' class='bigButton' onClick='buyMoney(1)'></button>
-		<button id='gen3' class='bigButton' onClick='buyMoney(2)'></button>
-		<br>
-		<div id='coalsection'><div id='coal'></div>
-		<div id='genpower'></div>
-		<div id='fuel'></div>
-		<button class='bigButton' onClick='exchange(5)'>Exchange $5 to 1 coal</button>
-		<button class='bigButton' onClick='exchange(6)'>Exchange 1 coal to $4</button>
-		<button class='bigButton' onClick='exchange(7)'>Turn coal to fuel</button>
-		<br>
-		<div id='upgsection'><button id='genpowerUpg' class='bigButton' onClick='buyMoney(3)'>Upgrade gen power<br>2x<br>Cost: $1</button>
-		<button id='fuelUpg' class='bigButton' onClick='buyMoney(4)'>Increase fuel efficient<br>1x<br>Cost: $1</button></div></div>
-	</div>
-	<div id='tababout' style='position:absolute;top:36px;width:100%;text-align:center;display:none'>Ranks is the game where you must rank up to unlock more content.<br>
-	Created by Aarex.
-	<br><br>
-	<a href='changelog.html' target="_newtab">Change log</a> | <s>Discord server</s> (<a href="http://discord.gg/KsjcgskgTj" target="_newtab">NG+3 Server</a>) | <a href="http://aarextiaokhiao.github.io">Aarex's Home</a>
-	<br><br>
-	<h1>WARNING</h1>
-	This game has been now archived after few years of development. I am not deleting this for historic purposes. You are feel free to still play this game, but however you will probably not enjoy it.</div>
 </body>
