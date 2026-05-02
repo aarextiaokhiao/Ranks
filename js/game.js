@@ -25,7 +25,7 @@ function getStartingPlayer() {
 
 		/* VERSIONING */
 		version: 1.02,
-		build: 1
+		build: 2
 	}
 }
 player = getStartingPlayer()
@@ -55,9 +55,7 @@ function gameInit() {
 		}
 	}, 1e3 / 20)
 
-
-
-	//setInterval(save, 30000)
+	setInterval(save, 30000)
 }
 
 function gameTick(diff) {
@@ -286,9 +284,6 @@ function load(savefile) {
 		savefile = deepUndefinedAndDecimal(savefile, getStartingPlayer())
 		savefile.version = player.version
 		savefile.build = player.build
-
-		//temp
-		savefile.time=new Date().getTime()
 		
 		player=savefile
 		console.log('Game loaded!')
@@ -318,7 +313,7 @@ function importSave() {
 function reset() {
 	if (confirm(`Are you sure to reset your save? You can't undo your action!`)) {
 		player = getStartingPlayer()
-		localStorage.clear('saveRanks')
+		localStorage.removeItem('saveRanks')
 
 		updateRankText()
 		updateValues()
