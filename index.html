@@ -2,8 +2,18 @@
 	A game made by Aarex without prestige and prestige layers.
 -->
 <head>
+	<title id="title">Ranks - Incremental Game</title>
+	<link rel="icon" href="img/points.png">
+
 	<link href='https://fonts.googleapis.com/css?family=Lexend' rel='stylesheet'>
 	<link rel="stylesheet" type="text/css" href="styles/styles.css">
+    <link rel="icon" href="img/favicon.png">
+
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://aarextiaokhiao.github.io/Ranks/"/>
+	<meta property="og:title" content="Ranks - Incremental Game"/>
+	<meta property="og:image" content="https://aarextiaokhiao.github.io/Ranks/img/favicon.png"/>
+    <meta property="og:description" content="Progress yourself to unlock new content! How far can you go?"/>
 
 	<script type="text/javascript" src="js/display.js"></script>
 	<script type="text/javascript" src="js/game.js"></script>
@@ -12,12 +22,21 @@
 	<script type="text/javascript" src="js/temp.js"></script>
 </head>
 <body onload='setup()'>
-	<div id='numberSmall' style='position:absolute;width:100%;bottom:24px;display:none;z-index:1'></div>
-	<div id='rank' style='position:absolute; width:100%; bottom:0; text-align:center; z-index:1'></div>
+	<div id="bg"></div>
+	<div id="bottom">
+		<div id='numberSmall'></div>
+		<div id='rank'></div>
+	</div>
 
 	<div class='upgrades' id='tabs' style='width:100%'>
-		<button class='wideButton' onclick='switchTab("main")'>Main</button>
-		<button id='tabmoneybutton' class='wideButton' onclick='switchTab("money")' style='display:none'>Money</button>
+		<button class='wideButton' onclick='switchTab("main")'>
+			<img src="img/tabs/main.png">
+			Main
+		</button>
+		<button id='tabmoneybutton' class='wideButton' onclick='switchTab("money")' style='display:none'>
+			<img src="img/tabs/money.png">
+			Money
+		</button>
 		<button class='wideButton' onclick='switchTab("options")'>Options</button>
 		<button class='wideButton' onclick='switchTab("stats")'>Stats</button>
 		<button class='wideButton' onclick='switchTab("about")'>About</button>
@@ -61,7 +80,7 @@
 			<div id='fuelWasted'></div>
 		</div>
 		<div id='tabmoney' style='display:none'>
-			<div id='money'></div>
+			<h1 id='money'></h1>
 			<div class='upgrades'>
 				<button id='exchange1' class='bigButton' onClick='exchange(1)'></button>
 				<button id='exchange2' class='bigButton' onClick='exchange(2)'></button>
@@ -94,7 +113,7 @@
 			Ranks is a game where you must rank up for content.
 
 			<br><br>
-			<a href='changelog.html' target="_newtab">Change log</a> | <a "http://aarextiaokhiao.github.io/chat.html">Discord</s> | <a href="http://aarextiaokhiao.github.io">Home</a>
+			<a href='changelog.html' target="_newtab">Change log</a> | <a href="http://aarextiaokhiao.github.io/chat.html">Discord</s> | <a href="http://aarextiaokhiao.github.io">Home</a>
 		</div>
 	</div>
 </body>

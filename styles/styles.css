@@ -1,7 +1,16 @@
 /* Body */
 body {
-	background-color: #010;
 	font-size: 16px;
+}
+
+#bg {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	z-index: -1;
+	background: linear-gradient(#000, #070)
 }
 
 * {
@@ -19,6 +28,12 @@ body {
 	left: 50%;
 	transform: translate(-50%, -50%);
 	font-size: 96px;
+	color: white;
+}
+
+.effect {
+	font-weight: bold;
+	font-size: 24px
 }
 
 /* Tables */
@@ -56,4 +71,32 @@ button:hover {
 .bigButton {
 	min-height: 48px;
 	width: 160px
+}
+
+/* Tabs */
+#tabs > button {
+	position: relative;
+	background: linear-gradient(#0b0, #030);
+	font-weight: bold;
+	font-size: 16px
+}
+
+#tabs > button > img {
+	position: absolute;
+	top: 0;
+	left: 3px;
+	height: 30px
+}
+
+/* Bottom */
+#bottom {
+	position: fixed;
+	width: 100%;
+	bottom: 0
+}
+
+#numberSmall {
+	font-size: 20px;
+	font-weight: bold;
+	color: white
 }

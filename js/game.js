@@ -25,7 +25,7 @@ function getStartingPlayer() {
 
 		/* VERSIONING */
 		version: 1.02,
-		build: 2
+		build: 3
 	}
 }
 player = getStartingPlayer()
@@ -54,6 +54,10 @@ function gameInit() {
 			console.error('A game error has been occured.', e)
 		}
 	}, 1e3 / 20)
+
+	setInterval(() => {
+		updateElement("title", "Ranks - " + format(player.num))
+	}, 1000)
 
 	setInterval(save, 30000)
 }
@@ -133,10 +137,10 @@ function gameTick(diff) {
 		}
 	}
 	if (tab=='money') {
-		updateElement('money','You have '+formatMoney(player.money)+'.')
-		updateElement('exchange1',format(1e4)+' -> 1 cent')
-		updateElement('exchange2','1 cent -> '+format(1e4))
-		updateElement('moneyMult',`${format(temp.mults.money, 2)}x Number production`)
+		updateElement('money', formatMoney(player.money))
+		updateElement('exchange1', format(1e4)+' -> 1 cent')
+		updateElement('exchange2', '1 cent -> '+format(1e4))
+		updateElement('moneyMult', `<b class='effect'>${format(temp.mults.money, 2)}x</b> Number production`)
 		for (var i = 1; i <= 3; i++) {
 			updateElement('gen' + i,`
 				<h3>+.5x Multiplier</h3>
