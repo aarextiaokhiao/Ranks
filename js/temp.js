@@ -1,31 +1,33 @@
 let temp = {
 	costs: {
 		mults: [],
-		money: []
+		gens: []
 	},
 	mults: {
 		total: 1
+	},
+	research: {
+		lvl: [],
+		eff: []
 	}
 }
 
 function updateCosts() {
-	var firstCosts = [10, 50, 500]
-	for (var i=0;i<3;i++) {
-		temp.costs.mults[i] = firstCosts[i] * Math.pow(1.5, player.multBought[i])
+	var firstCosts = [10, 50, 500, 2e8]
+	for (var i = 0; i < 4; i++) {
+		temp.costs.mults[i] = firstCosts[i] * Math.pow(1.5, player.mults[i])
 	}
 	temp.costs.sac = getNPS() * 45
 
 	for (var i = 0; i < 3; i++) {
-		temp.costs.money[i] = Math.ceil(Math.pow(1.5, player.gens[i]) * Math.pow(5, i))
+		temp.costs.gens[i] = Math.ceil(Math.pow(1.7, player.gens[i]) * Math.pow(5, i))
 	}
-	temp.costs.money[3] = Math.pow(player.genpower / 2, 2) * 100
-	temp.costs.money[4] = Math.pow(player.fuelefficent, 2) * 200
 }
 
 function updateMults() {
 	var total = 1
-	for (var i = 0; i < 3; i++) {
-		var mult = 1 + player.multBought[i] / 2
+	for (var i = 0; i < 4; i++) {
+		var mult = 1 + player.mults[i] / 2
 		temp.mults[i] = mult
 		total *= mult
 	}
@@ -40,6 +42,7 @@ function updateMults() {
 }
 
 function updateTemp() {
-	updateCosts()
+	RESEARCH.temp()
 	updateMults()
+	updateCosts()
 }

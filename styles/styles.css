@@ -47,6 +47,8 @@ body {
 
 /* Buttons */
 button {
+	min-width: 36px;
+
 	background: linear-gradient(#070, #000);
 	border: 1px solid #0b0;
 	border-radius: 6px;
@@ -76,9 +78,10 @@ button:hover {
 /* Tabs */
 #tabs > button {
 	position: relative;
-	background: linear-gradient(#0b0, #030);
+	background: linear-gradient(#0f0, #070);
 	font-weight: bold;
-	font-size: 16px
+	font-size: 16px;
+	color: black
 }
 
 #tabs > button > img {
@@ -99,4 +102,11 @@ button:hover {
 	font-size: 20px;
 	font-weight: bold;
 	color: white
+}
+
+/* Others */
+.fuel {
+	border: 1px solid #0f0;
+	width: 200px;
+	padding: 6px
 }

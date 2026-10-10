@@ -3,7 +3,6 @@
 -->
 <head>
 	<title id="title">Ranks - Incremental Game</title>
-	<link rel="icon" href="img/points.png">
 
 	<link href='https://fonts.googleapis.com/css?family=Lexend' rel='stylesheet'>
 	<link rel="stylesheet" type="text/css" href="styles/styles.css">
@@ -18,10 +17,14 @@
 	<script type="text/javascript" src="js/display.js"></script>
 	<script type="text/javascript" src="js/game.js"></script>
 	<script type="text/javascript" src="js/format.js"></script>
+	<script type="text/javascript" src="js/research.js"></script>
+	<script type="text/javascript" src="js/saving.js"></script>
 	<script type="text/javascript" src="js/setup.js"></script>
 	<script type="text/javascript" src="js/temp.js"></script>
 </head>
 <body onload='setup()'>
+    <input id="copy" style="position: absolute; top: 0; left: 0; user-select: all; visibility: hidden;">
+
 	<div id="bg"></div>
 	<div id="bottom">
 		<div id='numberSmall'></div>
@@ -37,6 +40,10 @@
 			<img src="img/tabs/money.png">
 			Money
 		</button>
+		<button id='tabresearchbutton' class='wideButton' onclick='switchTab("research")' style='display:none'>
+			<img src="img/tabs/research.png">
+			Research
+		</button>
 		<button class='wideButton' onclick='switchTab("options")'>Options</button>
 		<button class='wideButton' onclick='switchTab("stats")'>Stats</button>
 		<button class='wideButton' onclick='switchTab("about")'>About</button>
@@ -44,12 +51,14 @@
 	<div style='width: 100%'>
 		<div id='tabmain'>
 			<div id="number"></div>
+
 			<div style='position: absolute; width:100%; top: 60%'>
 				<!-- MULTIPLIERS -->
 				<div class='upgrades'>
-					<button id='mult1' class='bigButton' style='display:none' onclick='buyMult(1)'></button>
-					<button id='mult2' class='bigButton' style='display:none' onclick='buyMult(2)'></button>
-					<button id='mult3' class='bigButton' style='display:none' onclick='buyMult(3)'></button>
+					<button id='mult0' class='bigButton' style='display:none' onclick='buyUpgrade("mults", 0)'></button>
+					<button id='mult1' class='bigButton' style='display:none' onclick='buyUpgrade("mults", 1)'></button>
+					<button id='mult2' class='bigButton' style='display:none' onclick='buyUpgrade("mults", 2)'></button>
+					<button id='mult3' class='bigButton' style='display:none' onclick='buyUpgrade("mults", 3)'></button>
 				</div>
 
 				<!-- SACRIFICE -->
@@ -58,7 +67,7 @@
 					<h3 id="sacTime"></h3>
 					<div class='upgrades'>
 						<button id="sacBtn" class='bigButton' onclick="sacrifice()"></button>
-						<button class='bigButton' onclick="timewarp()">Use +60s</button>
+						<button class='bigButton' id="sacBtn2" onclick="timewarp('num')"></button>
 					</div>
 				</div>
 			</div>
@@ -67,17 +76,16 @@
 			<div class='upgrades'>
 				<button class='bigButton' onClick='save()'>Save</button>
 				<button class='bigButton' onClick='exportSave()'>Export</button>
+				<button class='bigButton' onClick='backupSave()'>Backup</button>
 				<button class='bigButton' onClick='importSave()'>Import</button>
 				<button class='bigButton' onClick='reset()'>Reset</button>
 				<button id='notation' class='bigButton' onClick='switchNotation()'></button>
 			</div>
-			<div id='exportSave' style='display:none'>Here is your export save. Enjoy! <input id='exportText' style='width: 480px'></input></div>
 		</div>
 		<div id='tabstats' style='display:none'>
 			<div id='timePlayed'></div>
 			<div id='totalNumber'></div>
 			<div id='timeRank'></div>
-			<div id='fuelWasted'></div>
 		</div>
 		<div id='tabmoney' style='display:none'>
 			<h1 id='money'></h1>
@@ -91,29 +99,41 @@
 			<br>
 			<div id='moneyMult'></div>
 			<div class='upgrades'>
-				<button id='gen1' class='bigButton' onClick='buyMoney(0)'></button>
-				<button id='gen2' class='bigButton' onClick='buyMoney(1)'></button>
-				<button id='gen3' class='bigButton' onClick='buyMoney(2)'></button>
+				<button id='gen0' class='bigButton' onclick='buyUpgrade("gens", 0)'></button>
+				<button id='gen1' class='bigButton' onclick='buyUpgrade("gens", 1)'></button>
+				<button id='gen2' class='bigButton' onclick='buyUpgrade("gens", 2)'></button>
 			</div>
 
-			<br>
-			<div id='coalsection'><div id='coal'></div>
-			<div id='genpower'></div>
-			<div id='fuel'></div>
-			<button class='bigButton' onClick='exchange(5)'>Exchange $5 to 1 coal</button>
-			<button class='bigButton' onClick='exchange(6)'>Exchange 1 coal to $4</button>
-			<button class='bigButton' onClick='exchange(7)'>Turn coal to fuel</button>
-			<br>
-			<div id='upgsection'><button id='genpowerUpg' class='bigButton' onClick='buyMoney(3)'>Upgrade gen power<br>2x<br>Cost: $1</button>
-			<button id='fuelUpg' class='bigButton' onClick='buyMoney(4)'>Increase fuel efficient<br>1x<br>Cost: $1</button></div></div>
+			<div id="fuel_div">
+				<br>
+				<h2>Fuel</h2>
+				<button class='bigButton' id="fuelMode" onClick='player.fuels.on = (player.fuels.on + 1) % 3'>Pause</button>
+				<div class='upgrades' id="fuel_boosts">
+					<!-- FILLER DIV. WILL BE FILLED WITH SETUP(). -->
+				</div>
+			</div>
+		</div>
+		<div id='tabresearch' style='display:none'>
+			<h1 id='research'></h1>
+			<div id='research_next'></div>
+			<button class="bigButton" id='research_assort' onclick="player.research.mode = !player.research.mode">Assort 50%: ON</button>
+			<div class='upgrades' id='research_boosts'>
+				<!-- FILLER DIV. WILL BE FILLED WITH SETUP(). -->
+			</div>
+
+			<!--<div id="sacSection2">
+				<br><br>
+				<h3 id="sacTime2">3:00 stored</h3>
+				<button class='bigButton' onclick="timewarp()">Use +60s</button>
+			</div>-->
 		</div>
 		<div id='tababout' style='display:none'>
-			<h1>Ranks: v1.02</h1>
-			<h2>Welcome back</h2>
+			<h1>Ranks: v1.03</h1>
+			<h2>Research</h2>
 			Ranks is a game where you must rank up for content.
 
 			<br><br>
-			<a href='changelog.html' target="_newtab">Change log</a> | <a href="http://aarextiaokhiao.github.io/chat.html">Discord</s> | <a href="http://aarextiaokhiao.github.io">Home</a>
+			<a href='changelog.html' target="_newtab">Change log</a> | <a href='help.html' target="_newtab">Help</a> | <a href="http://aarextiaokhiao.github.io/chat.html" target="_newtab">Discord</a> | <a href="http://aarextiaokhiao.github.io" target="_newtab">Home</a>
 		</div>
 	</div>
 </body>
